@@ -32,6 +32,13 @@ class AAdami_TheGauntletCharacter : public ACharacter
 	UCameraComponent* FollowCamera;
 	
 protected:
+	// Necessario per effettuare il binding all'avvio del gioco
+	virtual void BeginPlay() override;
+
+	// Questa è la funzione che verrà chiamata quando tocchi qualcosa.
+	// La firma (i parametri) DEVE essere esattamente questa per funzionare con AddDynamic.
+	UFUNCTION() 
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, Category="Input")
@@ -48,6 +55,7 @@ protected:
 	/** Mouse Look Input Action */
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* MouseLookAction;
+	
 
 public:
 
@@ -84,6 +92,14 @@ public:
 	/** Handles jump pressed inputs from either controls or UI interfaces */
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoJumpEnd();
+
+	UFUNCTION(BlueprintCallable, Category="Input")
+	virtual void DoFire();
+
+	UFUNCTION(BlueprintCallable, Category="Input")
+	virtual void DoInteract();
+
+	bool HasKey = false;
 
 public:
 

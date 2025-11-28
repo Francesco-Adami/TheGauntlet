@@ -11,6 +11,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Adami_TheGauntlet.h"
+#include "Collectible.h"
+#include "Damageable.h"
+#include "Interactable.h"
 
 AAdami_TheGauntletCharacter::AAdami_TheGauntletCharacter()
 {
@@ -48,6 +51,33 @@ AAdami_TheGauntletCharacter::AAdami_TheGauntletCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+}
+
+void AAdami_TheGauntletCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// Otteniamo il riferimento alla capsula del personaggio
+	UCapsuleComponent* Capsule = GetCapsuleComponent();
+
+	if (Capsule)
+	{
+		Capsule->OnComponentBeginOverlap.AddDynamic(this, &AAdami_TheGauntletCharacter::OnOverlapBegin);
+	}
+}
+
+void AAdami_TheGauntletCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	// 1. Controllo di validità: assicurati che non sia nullo e che non sia il player stesso
+	if (OtherActor && (OtherActor != this)) 
+	{
+		UE_LOG(LogTemp, Log, TEXT("Overlap con: %s"), *OtherActor->GetName());
+
+		if (OtherActor->Implements<UCollectible>())
+		{
+			ICollectible::Execute_OnCollect(OtherActor, this);
+		}
+	}
 }
 
 void AAdami_TheGauntletCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -130,4 +160,54 @@ void AAdami_TheGauntletCharacter::DoJumpEnd()
 {
 	// signal the character to stop jumping
 	StopJumping();
+}
+
+void AAdami_TheGauntletCharacter::DoFire()
+{
+	FHitResult Hit;
+	FVector StartLocation = FollowCamera->GetComponentLocation();
+	FVector ForwardVector = FollowCamera->GetForwardVector();
+	const float TraceDistance = 1000.0f; 
+	FVector EndLocation = StartLocation + (ForwardVector * TraceDistance);
+
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+    
+	// --- Esecuzione del Line Trace ---
+	if (GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, EndLocation, ECC_Visibility, Params))
+	{
+		AActor* HitActor = Hit.GetActor();
+       
+		if (HitActor && HitActor->Implements<UDamageable>())
+		{
+			IDamageable::Execute_TakeDamage(HitActor, 25.0f);
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT("Colpito: %s"), *HitActor->GetName()));
+		}
+	}
+}
+
+void AAdami_TheGauntletCharacter::DoInteract()
+{
+	FHitResult Hit;
+	FVector StartLocation = FollowCamera->GetComponentLocation();
+	FVector ForwardVector = FollowCamera->GetForwardVector();
+	const float TraceDistance = 1000.0f; 
+	FVector EndLocation = StartLocation + (ForwardVector * TraceDistance);
+
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+    
+	// --- Esecuzione del Line Trace ---
+	if (GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, EndLocation, ECC_Visibility, Params))
+	{
+		AActor* HitActor = Hit.GetActor();
+       
+		if (HitActor && HitActor->Implements<UInteractable>())
+		{
+			IInteractable::Execute_Interact(HitActor, this);
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString::Printf(TEXT("Interacted: %s"), *HitActor->GetName()));
+			// DrawDebugLine(GetWorld(), StartLocation, EndLocation, HitActor ? FColor::Green : FColor::Red, false, 2.0f, 0, 2.0f);
+		}
+	}
+
 }
