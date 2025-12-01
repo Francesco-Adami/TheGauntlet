@@ -27,15 +27,15 @@ void ACPP_TimeButton::Tick(float DeltaTime)
 
 void ACPP_TimeButton::Interact_Implementation(AActor* Interactor)
 {
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		2.0f,
-		FColor::Blue,
-		"Button Interact"
-	);
+	// GEngine->AddOnScreenDebugMessage(
+	// 	-1,
+	// 	2.0f,
+	// 	FColor::Blue,
+	// 	"Button Interact"
+	// );
 	
-	if (OnPressedDynamic.IsBound())
+	if (OnPressedDynamic.IsBound()) // se ha qualcosa dentro
 	{
-		OnPressedDynamic.Broadcast();
+		OnPressedDynamic.Broadcast(); // == Invoke();
 	}
 }

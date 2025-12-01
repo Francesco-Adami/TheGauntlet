@@ -35,6 +35,8 @@ protected:
 	// Necessario per effettuare il binding all'avvio del gioco
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaSeconds) override;
+
 	// Questa è la funzione che verrà chiamata quando tocchi qualcosa.
 	// La firma (i parametri) DEVE essere esattamente questa per funzionare con AddDynamic.
 	UFUNCTION() 

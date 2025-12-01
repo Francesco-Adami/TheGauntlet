@@ -11,6 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Adami_TheGauntlet.h"
+#include "Adami_TheGauntletGameMode.h"
 #include "Collectible.h"
 #include "Damageable.h"
 #include "Interactable.h"
@@ -63,6 +64,20 @@ void AAdami_TheGauntletCharacter::BeginPlay()
 	if (Capsule)
 	{
 		Capsule->OnComponentBeginOverlap.AddDynamic(this, &AAdami_TheGauntletCharacter::OnOverlapBegin);
+	}
+}
+
+void AAdami_TheGauntletCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	// UE_LOG(LogTemp, Error, TEXT("VALUE: %f"), GetActorTransform().GetLocation().Z)
+	if (GetActorTransform().GetLocation().Z < -100.0f)
+	{
+		AAdami_TheGauntletGameMode* GM = Cast<AAdami_TheGauntletGameMode>(GetWorld()->GetAuthGameMode());
+		if (GM) GM->PlayerDied();
+
+		Destroy();
 	}
 }
 

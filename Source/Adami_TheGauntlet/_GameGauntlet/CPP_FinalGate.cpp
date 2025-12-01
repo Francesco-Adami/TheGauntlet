@@ -3,6 +3,8 @@
 
 #include "_GameGauntlet/CPP_FinalGate.h"
 
+#include "Adami_TheGauntletGameMode.h"
+
 // Sets default values
 ACPP_FinalGate::ACPP_FinalGate()
 {
@@ -27,7 +29,7 @@ void ACPP_FinalGate::Tick(float DeltaTime)
 
 void ACPP_FinalGate::NotifyActorBeginOverlap(AActor* OtherActor)
 {
-	// Super::NotifyActorBeginOverlap(OtherActor);
+	UE_LOG(LogTemp, Log, TEXT("OVERLAPPED"));
 	GEngine->AddOnScreenDebugMessage(
 		-1,
 		2.0f,
@@ -39,12 +41,15 @@ void ACPP_FinalGate::NotifyActorBeginOverlap(AActor* OtherActor)
 	{
 		if (!active) return;
 	}
-
+	
 	GEngine->AddOnScreenDebugMessage(
 		-1,
 		2.0f,
 		FColor::Green,
 		"YOU WON"
 	);
+
+	AAdami_TheGauntletGameMode* GM = Cast<AAdami_TheGauntletGameMode>(GetWorld()->GetAuthGameMode());
+	if (GM) GM->LevelCompleted();
 }
 

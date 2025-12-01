@@ -21,6 +21,7 @@ void UGauntletGameInstance::LoadMainMenu()
 {
 	if (MainMenuMapName.IsNone()) return;
 
+	UE_LOG(LogTemp, Error, TEXT("MainMenuMapName: %s"), *MainMenuMapName.ToString());
 	UGameplayStatics::OpenLevel(this, MainMenuMapName);
 }
 
@@ -34,3 +35,4 @@ void UGauntletGameInstance::QuitGame()
 		UE_LOG(LogTemp, Log, TEXT("Richiesta chiusura gioco inviata."));
 	}
 }
+

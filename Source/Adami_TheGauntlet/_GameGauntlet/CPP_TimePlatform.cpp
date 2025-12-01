@@ -54,7 +54,7 @@ void ACPP_TimePlatform::ActivatePlatform()
 
 	GEngine->AddOnScreenDebugMessage(
 		-1,
-		2.0f,
+		5.0f,
 		FColor::Magenta,
 		"ACTIVATED PLATFORM"
 	);
@@ -77,7 +77,7 @@ void ACPP_TimePlatform::DeactivatePlatform()
 	
 	GEngine->AddOnScreenDebugMessage(
 		-1,
-		2.0f,
+		4.0f,
 		FColor::Red,
 		"DEACTIVATED PLATFORM"
 	);

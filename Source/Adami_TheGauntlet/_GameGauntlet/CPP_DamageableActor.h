@@ -30,6 +30,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DamageableActor")
 	float CurrentHealth;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UStaticMeshComponent* MeshComp;
+
+	UPROPERTY()
+	UMaterialInstanceDynamic* DestroyableMaterialInst;
+
 	virtual void TakeDamage_Implementation(float DamageAmount) override;
 
 };
