@@ -13,7 +13,8 @@ void UGauntletGameInstance::LaunchGame()
 	}
 
 	// Carica il livello
-	UGameplayStatics::OpenLevel(this, GameplayLevelName);
+	// UGameplayStatics::OpenLevel(this, GameplayLevelName);
+	UGameplayStatics::OpenLevelBySoftObjectPtr( GetWorld(), GameplayLevelWorld);
 	UE_LOG(LogTemp, Log, TEXT("Avvio del gioco: Caricamento %s"), *GameplayLevelName.ToString());
 }
 
@@ -22,7 +23,8 @@ void UGauntletGameInstance::LoadMainMenu()
 	if (MainMenuMapName.IsNone()) return;
 
 	UE_LOG(LogTemp, Error, TEXT("MainMenuMapName: %s"), *MainMenuMapName.ToString());
-	UGameplayStatics::OpenLevel(this, MainMenuMapName);
+	// UGameplayStatics::OpenLevel(this, MainMenuMapName);
+	UGameplayStatics::OpenLevelBySoftObjectPtr( GetWorld(), MainMenuMapWorld);
 }
 
 void UGauntletGameInstance::QuitGame()
@@ -31,7 +33,7 @@ void UGauntletGameInstance::QuitGame()
 	
 	if (PC)
 	{
-		UKismetSystemLibrary::QuitGame(this, PC, EQuitPreference::Quit, false);
+		UKismetSystemLibrary::QuitGame(GetWorld(), PC, EQuitPreference::Quit, true);
 		UE_LOG(LogTemp, Log, TEXT("Richiesta chiusura gioco inviata."));
 	}
 }
